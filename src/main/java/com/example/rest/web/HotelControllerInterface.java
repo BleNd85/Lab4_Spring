@@ -59,7 +59,9 @@ public interface HotelControllerInterface {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Success. No Content"),
-            @ApiResponse(responseCode = "409", description = "Conflict")
+            @ApiResponse(responseCode = "409", description = "Conflict"),
+            @ApiResponse(responseCode = "404", description = "Not Found"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")
     })
     @PutMapping("/{id}")
     ResponseEntity<Void> updateHotel(@PathVariable Long id, @RequestBody @Valid HotelDTO hotelDTO);
