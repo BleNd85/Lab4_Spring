@@ -6,6 +6,8 @@ import com.example.rest.repository.HotelRepository;
 import com.example.rest.service.exception.HotelNotFoundException;
 import com.example.rest.service.mapper.HotelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +21,7 @@ public class HotelServiceImplementation implements HotelService {
         this.hotelMapper = hotelMapper;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<HotelDTO> getAllHotels(String name, String type, int page, int size) {
         List<Hotel> hotels = hotelRepository.findAll().stream()
@@ -30,16 +33,19 @@ public class HotelServiceImplementation implements HotelService {
         return hotelMapper.toHotelDTOList(hotels);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public HotelDTO getHotelById(Long id) {
         return hotelMapper.toHotelDTO(hotelRepository.findById(id).orElseThrow(() -> new HotelNotFoundException(id)));
     }
 
+    @Transactional(propagation = Propagation.NESTED)
     @Override
     public void createHotel(HotelDTO hotelDTO) {
         hotelRepository.save(hotelMapper.toHotel(hotelDTO));
     }
 
+    @Transactional(propagation = Propagation.NESTED)
     @Override
     public void updateHotel(Long id, HotelDTO hotelDTO) {
         hotelRepository.findById(id).orElseThrow(() -> new HotelNotFoundException(id));
@@ -48,6 +54,7 @@ public class HotelServiceImplementation implements HotelService {
         hotelRepository.save(hotel);
     }
 
+    @Transactional
     @Override
     public void deleteHotel(Long id) {
         hotelRepository.findById(id).orElseThrow(() -> new HotelNotFoundException(id));
